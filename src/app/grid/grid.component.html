@@ -1,0 +1,88 @@
+<div class="d-flex justify-content-arround">
+  <div class="m-3">
+    <mat-form-field >
+      <mat-label>Puertas</mat-label>
+      <mat-select forControlName="doorid">
+        <mat-option *ngFor="let item of guestList" [value]="item.id" (click)="selectedDoor(item)">{{item.description}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="m-3">
+    <mat-form-field class="example-full-width">
+      <mat-label>Fecha desde</mat-label>
+      <input matInput 
+        [min]="minDate" 
+        [max]="maxDate" 
+        forControlName="startDate"
+        [matDatepicker]="startpicker" 
+        (dateChange)="getStartDate($event)">
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="startpicker"></mat-datepicker-toggle>
+      <mat-datepicker #startpicker></mat-datepicker>
+    </mat-form-field>
+  </div>
+  <div class="m-3">
+    <mat-form-field class="example-full-width">
+      <mat-label>Fecha hasta</mat-label>
+      <input matInput [min]="minDate" 
+      forControlName="startDate"
+      [max]="maxDate"
+      [matDatepicker]="endpicker"
+      (dateChange)="getEndDate($event)">
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="endpicker"></mat-datepicker-toggle>
+      <mat-datepicker #endpicker></mat-datepicker>
+    </mat-form-field>
+
+  </div>
+
+    
+  <button mat-raised-button color="primary" class="mt-4" (click)="filter()">Buscar</button>
+  <button mat-raised-button color="primary" class="mt-4 ms-2" (click)="reset()">ResetFilters</button>
+</div>
+
+
+  <div *ngIf="invalidSearch" class="alert alert-danger" role="alert">
+    <span  >error! debe seleccionar una fecha desde y una fecha hasta</span>
+  </div>
+  <div *ngIf="emptyDate" class="alert alert-danger" role="alert">
+    <span  >error! debe seleccionar una fecha desde y una fecha hasta</span>
+  </div>
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="door">
+    <th mat-header-cell *matHeaderCellDef> Puerta </th>
+    <td mat-cell *matCellDef="let element"> {{element.door.description}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="created">
+    <th mat-header-cell *matHeaderCellDef> Fecha </th>
+    <td mat-cell *matCellDef="let element"> {{element.created | date : "short" }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="firstname">
+    <th mat-header-cell *matHeaderCellDef> Nombre </th>
+    <td mat-cell *matCellDef="let element"> {{element.guest.firstname}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="lastname">
+    <th mat-header-cell *matHeaderCellDef> Apellido </th>
+    <td mat-cell *matCellDef="let element"> {{element.guest.lastname}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="delete">
+    <th mat-header-cell *matHeaderCellDef> Eliminar </th>
+    <td mat-cell *matCellDef="let element">  
+      <button mat-raised-button color="warn" (click)="delete(element)">eliminar</button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<mat-paginator [pageSizeOptions]="[5, 10, 20]"
+  showFirstLastButtons
+  aria-label="Select page of periodic elements">
+</mat-paginator>
